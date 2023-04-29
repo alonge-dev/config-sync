@@ -1,40 +1,68 @@
+---
+marp: true
+theme: default
+title: Config sync 
+description: An introduction to config sync and the gitops workflow
+author: George Alonge
+keywords: configsync, gke, gitops
+---
 # Config Sync 
 
 Today we cover:
 
-* What is Config Sync? 
+* What is Config Sync and Why? 
 * How it Works
 * How to Setup on both GKE and non-GKE clusters
 
+---
 
-# What is config sync? 
-Config Sync is an open source tool from Google that enables you to manage and sync the configuration of your Kubernetes clusters from a Git repository. 
+# Introduction
+Maintaining a consistent set of configurations and policies across environments can be come a challenge especially as companies 
+grow in size. The need for a way to manage these consistency across clusters/environments becomes apparent.
 
-- Works for single clusters, multi-tenant clusters and multi-cluster deployments
-- Based on gitops principles
-- YAML or JSON configs
+---
+# What is Config Sync? 
+Config sync is an open source based tool by google that allows you:
+* Manage and sync configurations/policies to your Kubernetes clusters.
+* Source: Any git repository (github, bitbucket, sourcerepos), OCI images and helm charts
+* Single or multiple clusters
+* Based on gitops principles
+* YAML or JSON configs
 
+---
+# Architecture Overview
+
+
+![bg 50%](https://cloud.google.com/static/anthos-config-management/docs/img/acm-overview.svg)
+
+---
 ## Offerings: 
-- OSS Config Sync (open source)
-- GKE/Anthos Config SYNC (managed)
+* OSS Config Sync (open source)
+* GKE/Anthos Config SYNC (managed)
 
+
+---
 
 # How It Works
-The main components of config sync:
-1. `Config Sync Operator`: Watches git and applies changes to cluster.
-2. `Config Management`: Manages config sync components e.g. repo url, branch, auth settings etc.
-3. `Config Validator`: Validates configs before applying them to cluster (optional)
+Some components of config sync:
+* `Root Sync`: Custom Resource objects that manage cluster wide resources.
+* `Repo Sync`: Custom Resource objects that manage namespaced resources
+* `Resource Groups`: Validates configs and tracks resources managed by config sync.
+* `Reconciler`: Manages root sync and repo sync objects by watching for changes and reconciling.
 
+---
 
 # How to Setup Config Sync
 If you are using a GKE cluster, then you can simply opt in for google's managed config sync. 
 
 ### GKE Clusters
-- Enable it on the UI
-- Enable it using Terraform
+* Enable it on the UI
+* Enable it using Terraform
 
 ### Non GKE Clusters
-- Install Manually
+* Install Manually
+
+---
 
 ## Demo
 - UI
