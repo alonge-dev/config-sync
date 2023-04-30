@@ -8,6 +8,8 @@ keywords: configsync, gke, gitops
 ---
 # Config Sync 
 
+![bg contain right:50%](https://files.codingninjas.in/article_images/anthos-config-management-3-1659783610.jpg)
+
 Today we cover:
 
 * What is Config Sync and Why? 
@@ -17,12 +19,13 @@ Today we cover:
 ---
 
 # Introduction
-Maintaining a consistent set of configurations and policies across environments can be come a challenge especially as companies 
-grow in size. The need for a way to manage these consistency across clusters/environments becomes apparent.
+* Maintaining a consistent set of configurations and policies across environments can become a challenge especially as companies grow in size. 
+* The need for a way to manage these consistency across clusters/environments becomes apparent.
+![bg contain right:30%](https://files.codingninjas.in/article_images/anthos-config-management-3-1659783610.jpg)
 
 ---
 # What is Config Sync? 
-Config sync is an open source based tool by google that allows you:
+Config sync is an "open source" tool by google that allows you:
 * Manage and sync configurations/policies to your Kubernetes clusters.
 * Source: Any git repository (github, bitbucket, sourcerepos), OCI images and helm charts
 * Single or multiple clusters
