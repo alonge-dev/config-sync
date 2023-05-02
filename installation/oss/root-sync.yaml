@@ -1,0 +1,16 @@
+# root-sync.yaml
+apiVersion: configsync.gke.io/v1beta1
+kind: RootSync
+metadata:
+  name: root-sync
+  namespace: config-management-system
+spec:
+  sourceType: git
+  sourceFormat: unstructured
+  git:
+    repo: https://github.com/alonge-dev/config-sync
+    revision: HEAD
+    branch: main
+    dir: policies/gke/base
+    auth: none
+    noSSLVerify: true

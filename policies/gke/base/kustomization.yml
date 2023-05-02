@@ -4,3 +4,6 @@ kind: Kustomization
 resources:
 - network
 - external-secrets
+
+# components:
+#   - ../components/nginx
