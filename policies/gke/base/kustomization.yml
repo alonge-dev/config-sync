@@ -5,5 +5,5 @@ resources:
 - network
 - external-secrets
 
-# components:
-#   - ../components/nginx
+components:
+  - ../components/nginx
