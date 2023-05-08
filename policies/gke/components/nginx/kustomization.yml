@@ -3,4 +3,5 @@ kind: Component
 
 resources:
   - deployment.yml
+  - nginx-secret.yml
   - namespace.yml
