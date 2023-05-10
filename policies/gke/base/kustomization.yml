@@ -6,5 +6,5 @@ resources:
 # - external-secrets
 - cis
 
-# components:
-#   - ../components/nginx
+components:
+  - ../components/nginx
