@@ -7,4 +7,4 @@ resources:
 - cis
 
 components:
-  - ../components/nginx
+  # - ../components/nginx
