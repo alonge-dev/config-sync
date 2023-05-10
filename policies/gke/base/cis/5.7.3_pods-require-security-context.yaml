@@ -34,7 +34,7 @@ metadata: # kpt-merge: /cis-k8s-v1.5.1-pods-require-security-context
       }"
     internal.kpt.dev/upstream-identifier: 'constraints.gatekeeper.sh|K8sPodsRequireSecurityContext|default|cis-k8s-v1.5.1-pods-require-security-context'
 spec:
-  enforcementAction: deny
+  enforcementAction: dryrun
   match:
     excludedNamespaces:
       - kube-system
