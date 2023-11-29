@@ -3,8 +3,13 @@ kind: Kustomization
 
 resources:
 - network
-# - external-secrets
-- cis
+# - cis
+# - asm-config
+# - asm-gateways
+- cert-manager
+- external-dns
+- external-secrets
+- k8s-dashboard
 
-components:
-  - ../components/nginx
+# components:
+#   - ../components/nginx

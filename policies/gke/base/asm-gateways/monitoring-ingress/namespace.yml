@@ -1,0 +1,25 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: monitoring-ingress
+  labels:
+    name: monitoring-ingress
+    istio.io/rev: asm-managed # enables managed injection in the gateway namespace
+
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-all
+  namespace: monitoring-ingress
+spec:
+  podSelector:
+    matchLabels:
+  ingress:
+  - {}
+  egress:
+  - {}
+  policyTypes:
+  - Ingress
+  - Egress

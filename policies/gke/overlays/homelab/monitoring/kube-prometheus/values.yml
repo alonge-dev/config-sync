@@ -1,0 +1,115 @@
+nameOverride: kube-prometheus
+namespaceOverride: monitoring
+fullnameOverride: prometheus
+
+prometheusOperator:
+  admissionWebhooks:
+    enabled: false
+    patch:
+      enabled: false
+  nodeExporter:
+    enabled: true
+  kubeStateMetrics:
+    enabled: true
+
+grafana:
+  enabled: true
+  testFramework:
+    enabled: false
+  image:
+    repository: docker.io/grafana/grafana
+    tag: 10.0.1
+    pullPolicy: IfNotPresent
+  serviceAccount:
+    create: true
+    name: grafana
+    annotations:
+      iam.gke.io/gcp-service-account: grafana@prj-100-homelab-sandbox-525.iam.gserviceaccount.com
+  sidecar:
+    datasources:
+      enabled: true
+      defaultDashboardsEnabled: true
+      isDefaultDatasource: true
+      uid: prometheus
+      defaultDatasourceScrapeInterval: 15s
+      url: http://prometheus-prometheus.monitoring:9090/prometheus/
+      label: grafana_datasource
+      labelValue: "1"
+    dashboards:
+      enabled: true
+      label: grafana_dashboard
+      labelValue: "1"
+  
+  grafana.ini:
+    server:
+      domain: monitoring.homelab.alonge.com
+      root_url: https://monitoring.homelab.alonge.dev/grafana/
+      serve_from_sub_path: true
+    analytics:
+      check_for_updates: true
+    # database:
+    #   type: mysql
+    #   host: $__file{/etc/secrets/db-host/grafana-db-host}
+    #   name: grafana
+    #   user: grafana
+    #   password: $__file{/etc/secrets/db-password/grafana-db-password}
+    grafana_net:
+      url: https://monitoring.homelab.alonge.dev/grafana/
+    log:
+      mode: console
+    paths:
+      data: /var/lib/grafana/
+      logs: /var/log/grafana
+      plugins: /var/lib/grafana/plugins
+      provisioning: /etc/grafana/provisioning
+    # auth:
+    #   disable_login_form: true
+    # auth.anonymous:
+    #   enabled: false
+  
+prometheus:
+  enabled: true
+  prometheusSpec:
+    additionalScrapeConfigs:
+    - job_name: 'kubernetes-pods'
+      kubernetes_sd_configs:
+        - role: pod
+      relabel_configs:
+      - action: keep
+        regex: true
+        source_labels:
+        - __meta_kubernetes_pod_annotation_prometheus_io_scrape
+      - action: labelmap
+        regex: __meta_kubernetes_pod_annotation_prometheus_io_param_(.+)
+        replacement: __param_$1
+      - action: labelmap
+        regex: __meta_kubernetes_pod_label_(.+)
+      - action: replace
+        source_labels:
+        - __meta_kubernetes_namespace
+        target_label: namespace
+      - action: replace
+        source_labels:
+        - __meta_kubernetes_pod_name
+        target_label: pod
+    replicas: 1
+    retention: 15d
+    podAntiAffinityTopologyKey: kubernetes.io/hostname
+    externalUrl: http://localhost:9090/prometheus
+    routePrefix: /prometheus
+    
+    securityContext:
+      runAsGroup: 2000
+      runAsNonRoot: true
+      runAsUser: 1000
+      fsGroup: 2000
+      seccompProfile:
+        type: RuntimeDefault
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: standard
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 100Gi

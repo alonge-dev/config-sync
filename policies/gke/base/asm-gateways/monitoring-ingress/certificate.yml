@@ -1,0 +1,36 @@
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: monitoring
+spec:
+  acme:
+    email: george@alonge.dev                          
+    server: https://acme-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      name: monitoring-ssl
+    solvers:
+    - selector:
+        dnsNames:
+          - monitoring.homelab.alonge.dev                      
+      dns01:
+        cloudDNS:
+          project: VAR_PROJECT_ID
+
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: monitoring
+spec:
+  isCA: true
+  dnsNames:
+    - monitoring.homelab.alonge.dev
+  secretName: monitoring-ssl
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+    rotationPolicy: Always
+  issuerRef:
+    name: monitoring
+    kind: Issuer
+    group: cert-manager.io

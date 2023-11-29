@@ -6,7 +6,7 @@ resources:
 
 helmCharts:
 - name: external-secrets
-  repo: https://charts.external-secrets.io
+  # repo: https://charts.external-secrets.io
   version: 0.8.1
   releaseName: external-secrets
   includeCRDs: true
@@ -14,3 +14,7 @@ helmCharts:
   valuesInline:
     serviceAccount:
       name: external-secrets
+      create: true
+      automount: true
+      annotations:
+        iam.gke.io/gcp-service-account: external-secrets@prj-100-homelab-sandbox-525.iam.gserviceaccount.com

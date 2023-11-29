@@ -1,0 +1,87 @@
+# Otel-Collector Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: otel-collector
+  namespace: monitoring
+  labels:
+    app: otel-collector
+  annotations:
+    prometheus.io/path: /metrics
+    prometheus.io/port: "8889"
+    prometheus.io/scrape: "true"
+    sidecar.istio.io/inject: "true"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: otel-collector
+  template:
+    metadata:
+      labels:
+        app: otel-collector
+    spec:
+      containers:
+        - args:
+            - --config
+            - /etc/otelcol/otel-collector-config.yml
+          image: otel/opentelemetry-collector-contrib:latest
+          imagePullPolicy: IfNotPresent
+          name: otel-collector
+          ports:
+          - containerPort: 55679 # Default endpoint for ZPages.
+          - containerPort: 4318 # Default endpoint for OpenTelemetry http receiver
+          - containerPort: 9411 # Default endpoint for Zipkin receiver.
+          - containerPort: 8888  # Default endpoint for querying metrics.
+          - containerPort: 8889 #endpoint for span metrics
+          volumeMounts:
+            - mountPath: /etc/otelcol
+              name: otel-collector-volume
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - NET_RAW
+            privileged: false
+            runAsNonRoot: true
+            runAsUser: 10001
+            seccompProfile:
+              type: RuntimeDefault
+          resources:
+            limits:
+              cpu: 500m
+              memory: 256Mi
+            requests:
+              cpu: 200m
+              memory: 256Mi
+      restartPolicy: Always
+      volumes:
+        - name: otel-collector-volume
+          configMap:
+              name: otel-collector-configmap
+              items:
+                - key: otel-collector-config.yml
+                  path: otel-collector-config.yml
+---
+# Otel-Collector Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: otel-collector
+  namespace: monitoring
+spec:
+  selector:
+    app: otel-collector
+  ports:
+    - name: "otlp-http"
+      port: 4318
+      targetPort: 4318
+    - name: "zipkin"
+      port: 9411
+      targetPort: 9411
+    - name: "span-http-metrics"
+      port: 8889
+      targetPort: 8889
+    - name: "legacy-otlp"
+      port: 14278
+      targetPort: 4318

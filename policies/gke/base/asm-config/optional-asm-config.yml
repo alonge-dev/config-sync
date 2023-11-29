@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: istio-asm-managed
+  namespace: istio-system
+data:
+   mesh: |-
+      defaultConfig:
+        tracing:
+          stackdriver: {}
+          sampling: 100.0
+          custom_tags:
+            cluster_id:
+              environment:
+                name: ISTIO_META_CLUSTER_ID
+            app_env:
+              environment:
+                name: ISTIO_META_APP_ENV
+            service:
+              environment:
+                name: ISTIO_META_WORKLOAD_NAME

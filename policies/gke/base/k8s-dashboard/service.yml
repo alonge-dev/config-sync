@@ -1,0 +1,103 @@
+---
+
+################################
+### Services & Ingresses
+################################
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: kubernetes-dashboard-web
+  namespace: kubernetes-dashboard
+  labels:
+    app.kubernetes.io/name: kubernetes-dashboard-web
+    app.kubernetes.io/part-of: kubernetes-dashboard
+    app.kubernetes.io/component: web
+    app.kubernetes.io/version: "v1.0.0"
+spec:
+  ports:
+    - name: web
+      port: 8000
+  selector:
+    app.kubernetes.io/name: kubernetes-dashboard-web
+    app.kubernetes.io/part-of: kubernetes-dashboard
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: kubernetes-dashboard-api
+  namespace: kubernetes-dashboard
+  labels:
+    app.kubernetes.io/name: kubernetes-dashboard-api
+    app.kubernetes.io/part-of: kubernetes-dashboard
+    app.kubernetes.io/component: api
+    app.kubernetes.io/version: "v1.0.0"
+spec:
+  ports:
+    - name: api
+      port: 9000
+  selector:
+    app.kubernetes.io/name: kubernetes-dashboard-api
+    app.kubernetes.io/part-of: kubernetes-dashboard
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: kubernetes-dashboard-metrics-scraper
+  namespace: kubernetes-dashboard
+  labels:
+    app.kubernetes.io/name: kubernetes-dashboard-metrics-scraper
+    app.kubernetes.io/part-of: kubernetes-dashboard
+    app.kubernetes.io/component: metrics
+    app.kubernetes.io/version: "v1.0.9"
+spec:
+  ports:
+    - port: 8000
+      targetPort: 8000
+  selector:
+    app.kubernetes.io/name: kubernetes-dashboard-metrics-scraper
+    app.kubernetes.io/part-of: kubernetes-dashboard
+
+---
+
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: kubernetes-dashboard
+  namespace: kubernetes-dashboard
+  labels:
+    app.kubernetes.io/name: nginx-ingress
+    app.kubernetes.io/part-of: kubernetes-dashboard
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    cert-manager.io/issuer: selfsigned
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - localhost
+      secretName: kubernetes-dashboard-certs
+  rules:
+    - host: localhost
+      http:
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: kubernetes-dashboard-web
+                port:
+                  name: web
+          - path: /api
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: kubernetes-dashboard-api
+                port:
+                  name: api
+
+---

@@ -1,0 +1,15 @@
+apiVersion: networking.gke.io/v1
+kind: HealthCheckPolicy
+metadata:
+  name: asm-ingressgateway
+spec:
+  default:
+    config:
+      httpHealthCheck:
+        port: 15021
+        requestPath: /healthz/ready
+      type: HTTP
+  targetRef:
+    group: ""
+    kind: Service
+    name: asm-ingressgateway

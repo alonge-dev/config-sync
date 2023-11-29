@@ -1,0 +1,7 @@
+installCRDs: true
+serviceAccount:
+  create: true
+  annotations:
+    iam.gke.io/gcp-service-account: cert-manager@prj-100-homelab-sandbox-525.iam.gserviceaccount.com        
+extraArgs: 
+  - --issuer-ambient-credentials

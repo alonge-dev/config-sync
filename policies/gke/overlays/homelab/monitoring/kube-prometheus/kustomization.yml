@@ -1,0 +1,18 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+
+resources:
+  - istio-metrics
+
+helmGlobals:
+  chartHome: ../../../../../addons/kube-prometheus/charts
+
+helmCharts:
+  - name: kube-prometheus-stack
+    namespace: monitoring
+    releaseName: prometheus
+    includeCRDs: true
+    version: 46.8.0
+    repo: https://prometheus-community.github.io/helm-charts
+    valuesFile: values.yml
