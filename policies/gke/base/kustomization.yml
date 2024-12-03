@@ -6,10 +6,10 @@ resources:
 # - cis
 # - asm-config
 # - asm-gateways
-- cert-manager
-- external-dns
+# - cert-manager
+# - external-dns
 - external-secrets
-- k8s-dashboard
+# - k8s-dashboard
 
 # components:
 #   - ../components/nginx
